@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 require('dotenv').config()
 
 
@@ -12,7 +13,7 @@ const users = require('./routes/users')
 const state = require('./routes/state')
 const basket = require('./routes/basket')
 
-
+app.use(cors());
 app.use(express.json());
 
 

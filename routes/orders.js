@@ -6,7 +6,7 @@ const pool = require('../config/bd');
 router.get("/", async (req, res) => {
 
     try {
-        const { rows: orders } = await pool.query('SELECT orders.*, SUM(basket.price * basket.amount) AS summ FROM orders LEFT JOIN basket ON orders.id = basket.order_id GROUP BY orders.id ', [])
+        const { rows: orders } = await pool.query('SELECT orders.*, SUM(basket.price * basket.amount) AS summ FROM orders LEFT JOIN basket ON orders.id = basket.order_id GROUP BY orders.id ORDER BY orders.id DESC', [])
         const { rows: products } = await pool.query('SELECT basket.order_id, basket.price, basket.amount, products.name FROM basket LEFT JOIN products ON basket.product_id = products.id', [])
         const ordersWithProducts = orders.map(item => {
             const ordersProducts = products.filter(product => product.order_id === item.id)
@@ -26,10 +26,7 @@ router.get("/user/:user_id", async (req, res) => {
     const { user_id } = req.params
 
     try {
-        // const { rows: orders } = await pool.query('SELECT * FROM orders WHERE user_id = $1', [user_id])
-        const { rows: orders } = await pool.query('SELECT orders.*, SUM(basket.price * basket.amount) AS summ FROM orders LEFT JOIN basket ON orders.id = basket.order_id WHERE orders.user_id = $1 GROUP BY orders.id ', [user_id])
-        console.log("🚀 ~ file: orders.js ~ line 31 ~ router.get ~ orders", orders)
-
+        const { rows: orders } = await pool.query('SELECT orders.*, SUM(basket.price * basket.amount) AS summ FROM orders LEFT JOIN basket ON orders.id = basket.order_id WHERE orders.user_id = $1 AND orders.status != $2 GROUP BY orders.id ', [user_id, 'доставлено'])
         res.send(orders)
     } catch (error) {
         console.log(error)

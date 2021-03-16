@@ -5,7 +5,7 @@ const pool = require('../config/bd');
 router.get("/", async (req, res) => {
 
     try {
-        const { rows: reponses } = await pool.query('SELECT * FROM responses', [])
+        const { rows: reponses } = await pool.query('SELECT * FROM responses ORDER BY id DESC', [])
         res.send(reponses)
     } catch (error) {
         console.log(error)
@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
     try {
         const userRes = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id])
         const type = userRes.rows[0].response
-        await pool.query('INSERT INTO responses (user_id, date, text, type) VALUES ($1, $2, $3, $4) RETURNING *', [user_id, date, text, type])
+        await pool.query('INSERT INTO responses (user_id, date, text, type) VALUES ($1, $2, $3, $4) RETURNING *', [user_id, date, text, type.toLowerCase()])
         res.send('Ok')
     } catch (error) {
         console.log(error)

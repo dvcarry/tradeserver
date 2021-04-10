@@ -35,7 +35,7 @@ router.get("/user/:user_id", async (req, res) => {
 
 router.put("/info", async (req, res) => {
 
-    const { user_id, address, phone, type } = req.body
+    const { user_id, address, phone, type, email } = req.body
 
     try {
         if (address) {

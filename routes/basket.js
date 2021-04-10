@@ -70,9 +70,13 @@ router.put("/amount", async (req, res) => {
     try {
         const { rows: user } = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id])
         const currentProduct = user[0].basket_product
+        const productRes = await pool.query('SELECT amount FROM products WHERE id = $1', [productRes])
+        const totalAmount = productRes.rows[0].amount
         const basketProductRes = await pool.query('SELECT amount FROM basket WHERE id = $1', [currentProduct])
         const currentAmount = basketProductRes.rows[0].amount
-        if (currentAmount !== 0 || type === 'plus') {
+        const notGoToMinus = currentAmount !== 0 || type === 'plus'
+        // const notToUnavailableAmount = type === 'plus' && totalAmount 
+        if (notGoToMinus) {
             await pool.query('UPDATE basket SET amount = amount + $1 WHERE user_id = $2 AND id = $3', [amount, user_id, currentProduct])
         } 
         res.json({ currentProduct })

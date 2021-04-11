@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
         const { rows: orders_logs } = await pool.query('SELECT * FROM orders_logs', [])
         const ordersWithProducts = orders.map(item => {
             const ordersProducts = products.filter(product => product.order_id === item.id)
-            const order_logs = orders_logs.filter(log => log.order_id === tem.id)
+            const order_logs = orders_logs.filter(log => log.order_id === item.id)
             return {
                 ...item,
                 ordersProducts,

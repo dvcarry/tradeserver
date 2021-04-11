@@ -14,6 +14,7 @@ router.get("/", async (req, res) => {
             const order_logs = orders_logs.filter(log => log.order_id === item.id)
             return {
                 ...item,
+                status: order_logs[order_logs.length - 1].status,
                 ordersProducts,
                 order_logs
             }
